@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+panel_mazos.html
+radar_mazos.log
+site/
+

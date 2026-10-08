@@ -1,0 +1,15 @@
+{
+  "source": {
+    "name": "SnapComplete",
+    "period": "week",
+    "mode": "ranked-conquest",
+    "minimum_games": 10,
+    "maximum_decks": 250,
+    "sort": "win_rate"
+  },
+  "dashboard": {
+    "recent_days": 7,
+    "maximum_rows": 1000
+  }
+}
+
