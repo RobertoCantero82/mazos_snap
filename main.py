@@ -6,16 +6,14 @@ import sys
 import webbrowser
 from pathlib import Path
 
-from src.dashboard import render_dashboard
-from src.database import (
-    finish_run,
-    init_db,
-    list_decks,
-    start_run,
-    stats,
-    upsert_decks,
-)
-from src.source_snapcomplete import SnapCompleteClient
+try:
+    from src.dashboard import render_dashboard
+    from src.database import finish_run, init_db, list_decks, start_run, stats, upsert_decks
+    from src.source_snapcomplete import SnapCompleteClient
+except ModuleNotFoundError:
+    from dashboard import render_dashboard
+    from database import finish_run, init_db, list_decks, start_run, stats, upsert_decks
+    from source_snapcomplete import SnapCompleteClient
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
