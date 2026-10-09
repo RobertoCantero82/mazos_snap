@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 from typing import Dict, Iterable, List
 
 import requests
@@ -18,6 +20,9 @@ SUPABASE_URL = "https://ytdzngkbndthkutccrkn.supabase.co/rest/v1/rpc/"
 PUBLIC_KEY = "sb_publishable_VlU5KB6tysM0IlsvxsskUg_Bo9Jz6BO"
 CARD_DATA_URL = "https://snapjson.untapped.gg/v1/latest/cards.json"
 SOURCE_URL = "https://snapcomplete.com/play/decks"
+MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(MODULE_DIR) if os.path.basename(MODULE_DIR) == "src" else MODULE_DIR
+CARD_CACHE_PATH = os.path.join(BASE_DIR, "data", "card_metadata.json")
 
 
 class SnapCompleteClient:
@@ -55,11 +60,23 @@ class SnapCompleteClient:
         response = self.session.get(CARD_DATA_URL, timeout=self.timeout)
         response.raise_for_status()
         payload = response.json()
-        return {
+        metadata = {
             str(item.get("defId")): item
             for item in payload
             if isinstance(item, dict) and item.get("defId")
         }
+        os.makedirs(os.path.dirname(CARD_CACHE_PATH), exist_ok=True)
+        public_metadata = {
+            def_id: {
+                "name": str(item.get("name") or def_id),
+                "cost": int(item.get("cost") or 0),
+                "power": int(item.get("power") or 0),
+            }
+            for def_id, item in metadata.items()
+        }
+        with open(CARD_CACHE_PATH, "w", encoding="utf-8") as handle:
+            json.dump(public_metadata, handle, ensure_ascii=False, separators=(",", ":"))
+        return metadata
 
     def fetch_decks(
         self,
